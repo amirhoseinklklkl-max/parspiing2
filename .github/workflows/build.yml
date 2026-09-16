@@ -43,6 +43,19 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
 
+      - name: Inspect AdiveryListener signature (diagnostic)
+        if: always()
+        run: |
+          AAR=$(find ~/.gradle/caches -name "sdk-4.9.0.aar" | head -n 1)
+          if [ -z "$AAR" ]; then
+            echo "Adivery AAR not found in cache"
+          else
+            echo "Found AAR: $AAR"
+            mkdir -p /tmp/adivery_aar
+            unzip -o -q "$AAR" -d /tmp/adivery_aar
+            javap -p -classpath /tmp/adivery_aar/classes.jar com.adivery.sdk.AdiveryListener || true
+          fi
+
       - name: Upload signed APK artifact
         uses: actions/upload-artifact@v4
         with:
