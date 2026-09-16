@@ -10,9 +10,9 @@ class App : Application() {
 
         Adivery.configure(this, AdiveryIds.APP_ID)
 
-        // Warm up both placements as early as possible so they're ready
-        // by the time the user opens the app / taps connect.
-        Adivery.prepareAppOpenAd(this, AdiveryIds.APP_OPEN_PLACEMENT_ID)
+        // Warm up the rewarded placement as early as possible so it's ready
+        // by the time the user taps connect. App-open ads need an Activity
+        // context, so that one is prepared from MainActivity instead.
         Adivery.prepareRewardedAd(this, AdiveryIds.REWARDED_PLACEMENT_ID)
     }
 }

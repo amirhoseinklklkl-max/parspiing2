@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         dnsRepository = DnsRepository(this)
+        Adivery.prepareAppOpenAd(this, AdiveryIds.APP_OPEN_PLACEMENT_ID)
         showAppOpenAdOnLaunch()
 
         setContent {
@@ -147,7 +148,7 @@ private fun ParsPingApp(
     var customDns by remember { mutableStateOf(dnsRepository.loadCustomDns()) }
     var selectedId by remember { mutableStateOf(dnsRepository.loadSelectedDnsId()) }
     val pings = remember { mutableStateMapOf<String, Long?>() }
-    val pingLoadingIds = remember { mutableStateSetOf<String>() }
+    var pingLoadingIds by remember { mutableStateOf(setOf<String>()) }
 
     val isConnected by VpnStatus.isConnected.collectAsState()
     val connectedName by VpnStatus.connectedDnsName.collectAsState()
@@ -165,11 +166,11 @@ private fun ParsPingApp(
     fun refreshPings() {
         val all = dnsGroups.values.flatten()
         all.forEach { dns ->
-            pingLoadingIds.add(dns.id)
+            pingLoadingIds = pingLoadingIds + dns.id
             scope.launch {
                 val result = PingUtil.measure(dns.primary)
                 pings[dns.id] = result
-                pingLoadingIds.remove(dns.id)
+                pingLoadingIds = pingLoadingIds - dns.id
             }
         }
     }
@@ -203,11 +204,11 @@ private fun ParsPingApp(
             )
             dnsRepository.addCustomDns(newDns)
             customDns = dnsRepository.loadCustomDns()
-            pingLoadingIds.add(newDns.id)
+            pingLoadingIds = pingLoadingIds + newDns.id
             scope.launch {
                 val result = PingUtil.measure(newDns.primary)
                 pings[newDns.id] = result
-                pingLoadingIds.remove(newDns.id)
+                pingLoadingIds = pingLoadingIds - newDns.id
             }
         },
         onRemoveCustom = { id ->
