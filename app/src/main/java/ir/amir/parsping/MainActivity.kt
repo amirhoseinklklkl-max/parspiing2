@@ -65,10 +65,6 @@ class MainActivity : ComponentActivity() {
                     Adivery.showAppOpenAd(this@MainActivity, placementId)
                     Adivery.removePlacementListener(placementId)
                 }
-
-                override fun onError(placementId: String, reason: String) {
-                    Adivery.removePlacementListener(placementId)
-                }
             })
         }
     }
@@ -106,12 +102,6 @@ class MainActivity : ComponentActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-
-            override fun onError(placementId: String, reason: String) {
-                Adivery.removePlacementListener(placementId)
-                VpnStatus.setBusy(false)
-                Toast.makeText(this@MainActivity, "نمایش تبلیغ با خطا مواجه شد", Toast.LENGTH_SHORT).show()
             }
         })
 
