@@ -80,9 +80,8 @@ private fun PingBadge(pingMs: Long?, loading: Boolean) {
     val (color, text) = when {
         loading -> MaterialTheme.colorScheme.onSurfaceVariant to "..."
         pingMs == null -> PingBad to "✕"
-        pingMs < 80 -> PingGood to "${pingMs}ms"
-        pingMs < 200 -> PingMedium to "${pingMs}ms"
-        else -> PingBad to "${pingMs}ms"
+        pingMs < 200 -> PingGood to "${pingMs}ms"
+        else -> PingMedium to "${pingMs}ms"
     }
 
     Box(
